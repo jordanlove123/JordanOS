@@ -29,12 +29,6 @@ compile_mem: kernel/memory.c
 compile_pmm: kernel/pmm.c
 	$(CC) -c kernel/pmm.c -o $(OBJ)/pmm.o $(CFLAGS)
 
-compile_gdt: kernel/gdt.c
-	$(CC) -c kernel/gdt.c -o $(OBJ)/gdt.o $(CFLAGS)
-
-compile_vga: kernel/vga.c
-	$(CC) -c kernel/vga.c -o $(OBJ)/vga.o $(CFLAGS)
-
 compile_idt: kernel/idt.c
 	$(CC) -c kernel/idt.c -o $(OBJ)/idt.o $(CFLAGS)
 
