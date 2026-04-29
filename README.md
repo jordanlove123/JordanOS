@@ -66,7 +66,9 @@ qemu-system-x86_64 -cdrom myos.iso -m 512M
 
 ### Real Hardware via GRUB
 
-> **Note:** This will modify your GRUB configuration. Only do this if you are comfortable with bootloader setup and have a way to recover if something goes wrong (e.g. a live USB).
+> **Warning:** This will modify your GRUB configuration. Only do this if you are comfortable with bootloader setup and have a way to recover if something goes wrong (e.g. a live USB).
+
+> **Secure Boot:** JordanOS is an unsigned kernel and will not boot on systems with Secure Boot enabled. You will need to disable Secure Boot in your UEFI firmware settings before it will load. Disabling Secure Boot reduces a layer of protection against unsigned bootloaders and operating systems — do this at your own risk and re-enable it if you remove JordanOS.
 
 1. Build the project to produce `myos.iso`, then copy the kernel binary to your boot partition:
 ```
