@@ -10,6 +10,7 @@
 #include "../include/keyboard.h"
 #include "../include/heap.h"
 #include "../include/pit.h"
+#include "../include/ata.h"
 
 void kernel_main(uint32_t magic, mb2_info_t *mbi) {
     // beep_n(1);
@@ -26,6 +27,7 @@ void kernel_main(uint32_t magic, mb2_info_t *mbi) {
     pit_init();
 
     fb_clear(FB_BLACK);
+    ata_init();
     fb_println("Welcome to JordanOS");
     fb_println("Type a command or help");
     fb_print("> ");

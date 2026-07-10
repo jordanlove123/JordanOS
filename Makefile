@@ -12,7 +12,7 @@ OBJ := obj
 all: iso
 
 run: iso
-	qemu-system-x86_64 -cdrom myos.iso
+	qemu-system-x86_64 -cdrom myos.iso -drive file=disk.img,format=raw
 
 assemble: boot/boot.s
 	$(AS) boot/boot.s -o $(OBJ)/boot.o
@@ -59,8 +59,11 @@ compile_shell: kernel/shell.c
 compile_string: kernel/string.c
 	$(CC) -c kernel/string.c -o $(OBJ)/string.o $(CFLAGS)
 
-link: assemble assemble_interrupts compile compile_mem compile_pmm compile_paging compile_fb compile_beep compile_idt compile_pic compile_keyboard compile_heap compile_pit compile_shell compile_string
-	$(LD) $(OBJ)/boot.o $(OBJ)/interrupts.o $(OBJ)/memory.o $(OBJ)/pmm.o $(OBJ)/paging.o $(OBJ)/fb.o $(OBJ)/beep.o $(OBJ)/idt.o $(OBJ)/pic.o $(OBJ)/keyboard.o $(OBJ)/heap.o $(OBJ)/pit.o $(OBJ)/shell.o $(OBJ)/string.o $(OBJ)/kernel.o -o isodir/boot/myos.kernel -m elf_x86_64 -T linker.ld -nostdlib
+compile_ata: kernel/ata.c
+	$(CC) -c kernel/ata.c -o $(OBJ)/ata.o $(CFLAGS)
+
+link: assemble assemble_interrupts compile compile_mem compile_pmm compile_paging compile_fb compile_beep compile_idt compile_pic compile_keyboard compile_heap compile_pit compile_shell compile_string compile_ata
+	$(LD) $(OBJ)/boot.o $(OBJ)/interrupts.o $(OBJ)/memory.o $(OBJ)/pmm.o $(OBJ)/paging.o $(OBJ)/fb.o $(OBJ)/beep.o $(OBJ)/idt.o $(OBJ)/pic.o $(OBJ)/keyboard.o $(OBJ)/heap.o $(OBJ)/pit.o $(OBJ)/shell.o $(OBJ)/string.o $(OBJ)/ata.o $(OBJ)/kernel.o -o isodir/boot/myos.kernel -m elf_x86_64 -T linker.ld -nostdlib
 
 iso: link
 	grub-mkrescue -o myos.iso isodir

@@ -3,6 +3,7 @@
 #include "../include/fb.h"
 #include "../include/io.h"
 #include "../include/pmm.h"
+#include "../include/ata.h"
 
 void shell_exec(const char *line) {
     static char buf[256];
@@ -38,6 +39,7 @@ void shell_exec_args(int argc, char *argv[]) {
         fb_println("help - display available commands");
         fb_println("clear - clear the screen");
         fb_println("mem - show memory statistics");
+        fb_println("disk - show disk information");
         fb_println("theme <THEME> - change colors");
         fb_println("reboot - reboot computer");
     }
@@ -66,6 +68,23 @@ void shell_exec_args(int argc, char *argv[]) {
         int_to_str(total_pages-free_pages, buf);
         fb_print("Used pages              ");
         fb_println(buf);
+    }
+    else if (strcmp(argv[0], "disk") == 0) {
+        if (argc != 1) {
+            fb_println("disk command does not take any arguments");
+            return;
+        }
+        char buf[16];
+        const ata_drive_t *drive = ata_get_drive();
+        fb_print("Model:  ");
+        fb_println(drive->model);
+        fb_print("Size:   ");
+        int_to_str((drive->total_sectors * 512) >> 20, buf);
+        fb_print(buf);
+        fb_print(" MB (");
+        int_to_str(drive->total_sectors, buf);
+        fb_print(buf);
+        fb_println(" sectors)");
     }
     else if (strcmp(argv[0], "theme") == 0) {
         if (argc != 2) {

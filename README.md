@@ -13,6 +13,7 @@ A hobby operating system written in C and x86-64 assembly, booted via GRUB with 
 - PS/2 keyboard driver with scancode mapping
 - PIT timer at 100 Hz with blinking cursor
 - Interactive terminal with theming support
+- ATA PIO disk driver (IDENTIFY and sector reads) — QEMU / legacy IDE mode only for now
 
 ## Terminal Commands
 
@@ -21,6 +22,7 @@ A hobby operating system written in C and x86-64 assembly, booted via GRUB with 
 | `help` | List available commands |
 | `clear` | Clear the screen |
 | `mem` | Show memory statistics |
+| `disk` | Show disk model and size |
 | `theme <name>` | Change color theme (`theme --help` for options) |
 | `reboot` | Reboot the computer |
 
@@ -50,13 +52,19 @@ This produces `myos.iso`.
 
 ### QEMU (recommended for testing)
 
+`make run` attaches a disk image so the `disk` command has something to read. Create one once:
+```
+qemu-img create -f raw disk.img 64M
+```
+
+Then:
 ```
 make run
 ```
 
 Or manually:
 ```
-qemu-system-x86_64 -cdrom myos.iso
+qemu-system-x86_64 -cdrom myos.iso -drive file=disk.img,format=raw
 ```
 
 To allocate more RAM (default is 128 MB):
@@ -105,6 +113,7 @@ include/          - Header files
 kernel/
   kernel.c        - Entry point and initialization
   fb.c            - Framebuffer driver and terminal
+  ata.c           - ATA PIO disk driver (IDENTIFY, sector reads)
   idt.c           - Interrupt descriptor table
   pic.c           - Programmable interrupt controller
   pit.c           - Programmable interval timer
